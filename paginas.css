@@ -3,6 +3,17 @@ body {
     background: #86cdf6;
 }
 
-img {
-    
+nav li {
+    display: inline;
+    margin: 0 0 0 15px;
+}
+
+nav a {
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+ul {
+    list-style: none;
 }
