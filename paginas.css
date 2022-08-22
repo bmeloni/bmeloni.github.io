@@ -3,6 +3,10 @@ body {
     background: #86cdf6;
 }
 
+img {
+    width: 690;
+}
+
 nav li {
     display: inline;
     margin: 0 0 0 15px;
