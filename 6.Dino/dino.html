@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="style.css">
+        <link rel="sortcut icon" href="./img/dino1.png">
+        <title>Replica do jogo do dino do chrome</title>
+    </head>
+
+    <body onkeydown="OnKeyDown(event)">
+        <img id="cacto1" width="0" height="0" src="./Dino/img/cacto1.png"/>
+        <img id="cacto2" width="0" height="0" src="./img/cacto2.png"/>
+        <img id="cacto3" width="0" height="0" src="./img/cacto3.png"/>
+        <img id="dino1" width="0" height="0" src="./img/dino1.png"/>
+        <img id="dino2" width="0" height="0" src="./img/dino2.png"/>
+        <img id="dino3" width="0" height="0" src="./img/dino3.png"/>
+        <img id="dino4" width="0" height="0" src="./img/dino4.png"/>
+        <img id="dinoError" width="0" height="0" src="./img/dinoError.png"/>
+        <canvas id="myCanvas" width="1000" height="600"></canvas>
+    </body>
+
+        <script>
+            var x=30;
+            var y=500;
+            var cactoX=900;
+            var cacto = [
+                {
+                    src: document.getElementById("cacto1"),
+                    width: 50,
+                },
+
+                {
+                    src: document.getElementById("cacto2"),
+                    width: 98,
+                },
+
+                {
+                    src: document.getElementById("cacto3"),
+                    width: 104,
+                },
+            ];
+            var c = document.getElementById("myCanvas");
+            var ctx = c.getContext("2d");
+
+            var dino = [
+                {src: document.getElementById("dino1"),},
+                {src: document.getElementById("dino2"),},
+                {src: document.getElementById("dino3"),},
+                {src: document.getElementById("dino4"),},
+            ];
+
+            var dinoError = document.getElementById("dinoError");
+            var jumping = false;
+            var i = 1;
+            var score = 0;
+            var record = 0;
+            var crashed = false;
+            var random = Math.floor(Math.random() * cacto.length);
+            function OnKeyDown(event) {
+                if (crashed && event.key == " ") {
+                    crashed = false;
+                    upd = setInterval(Update, 1);
+                    grav = setInterval(gravity, 30);
+                    x = 35;
+                    y = 500;
+                    cactoX = 900;
+                    record = score > record ? score : record;
+                    score = 0;
+                }
+                jumping = event.key == "w" || event.key == " " || event.key == "ArrowUp" && !event.repeat && y == 500;
+            }
+
+            function rectIntersect(x1, y1, w1, h1, x2, y2, w2, h2) {
+                // Verifique x e y para sobreposição
+                if (
+                    x2 > w1 + x1 ||
+                    x1 > w2 + x2 ||
+                    y2 > h1 + y1 ||
+                    y1 > h2 + y2
+                ) {
+                    return false;
+                }
+                return true;
+            }
+
+            function drawDino(x, y, w, h, anim) {
+                if (y < 500) {
+                    ctx.drawImage(dino[0].src, x, y, w, h);
+                } else ctx.drawImage(dino[anim].src, x, y, w, h);
+            }
+            function gravity() {
+                if (y < 500) y += 10;
+            }
+            function Update() {
+                ctx.clearRect(0, 0, 1000, 600);
+                ctx.font = "18px Consolas";
+                ctx.fillText(`SEU RECORDE: ${record} PONTOS: ${score}`, 650, 50);
+                if (cactoX === 900) {
+                    random = Math.floor(Math.random() * cacto.length);
+                }
+                ctx.drawImage(
+                    cacto[random].src,
+                    cactoX,
+                    500,
+                    cacto[random].width,
+                    105
+                );
+                ctx.fillStyle = "#535353";
+                ctx.fillRect(0, 560, 1000, 2);
+
+                if (y >= 250 && jumping) y -= 10;
+                else jumping = false;
+
+                drawDino(x, y, 88, 85, i);
+
+                cactoX = cactoX > -30 ? cactoX - 2 : 900;
+
+                if (
+                    rectIntersect(
+                        x + 5,
+                        y + 5,
+                        70,
+                        75,
+                        cactoX,
+                        500,
+                        cacto[random].width,
+                        cacto[random].height
+                    )
+
+                ) {
+                    ctx.clearRect(x + 47, y + 5, 10, 10);
+                    ctx.drawImage(dinoError, x, y, 88, 85);
+                    crashed = true;
+                    ctx.font = "24px Consolas";
+                    ctx.fillText("Você morreu, aperte espaço para jogar de novo!", 200, 200);
+                    clearInterval(upd);
+                    clearInterval(grav);
+                }
+                if (cactoX == -30 && !crashed) {
+                    score += 50;
+                    record = score > record ? score : record;
+                }
+            }
+
+            if (!crashed) {
+                var upd = setInterval(Update, 1);
+                var grav = setInterval(gravity, 25);
+                setInterval(() => (i = i === 3 ? 2 : i + 1), 250);
+            }
+        </script>
+</html>

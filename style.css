@@ -1,0 +1,21 @@
+* {
+    background: #393E46;
+}
+
+.foto {
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+}
+
+p {
+    color: #AAD8D3;
+}
+
+ul {
+    display: inline-block;
+    vertical-align: top;
+    width: 20%;
+    margin-right: 15%;
+    text-decoration: none;
+}
